@@ -25,20 +25,22 @@ typedef long long ll;
 const int mod = 1e9+7;
 const ll INF = 1e18;
 
-set<int> white;
+// set<int> white;
 
 int gray[10007];
+int white[10007];
 // vi TOPO;
 
 int visited[10007];
 
 int dfs(vector<vi> Adj, int s)	{
-	white.erase(s);
+	// white.erase(s);
+	white[s] = 0;
 	gray[s] = 1;
 	REP(j, Adj[s].size())	{
-		const bool is_in = white.find(Adj[s][j]) != white.end();
+		const bool is_in = white[Adj[s][j]];
 		int m;	
-		if(is_in)	{
+		if(is_in == 1)	{
 			m = dfs(Adj, Adj[s][j]);
 			if(m == -1)
 				return -1;
@@ -56,7 +58,7 @@ int main()	{
 	sd(n);
 	sd(m);
 	REP(i, n)
-		white.insert(i);
+		white[i] = 1;
 	vector<vi> Adj(n);
 	vi in(n);
 	REP(i, m)	{
@@ -66,17 +68,19 @@ int main()	{
 		Adj[u-1].pb(v-1);
 		in[v-1] += 1;
 	}
-	/*
-	while(!white.empty())	{
-		// cout << *white.begin() << endl;
-		int x = dfs(Adj, *white.begin());
-		if(x == -1)	{
-			// cout << "Sandro fails" << endl;
-			printf("Sandro fails\n");
-			return 0;
+	int k=0;
+	while(k < n)	{
+		if(white[k] == 1)	{
+			int x = dfs(Adj, k);
+			if(x == -1)	{
+				// cout << "Sandro fails" << endl;
+				printf("Sandro fails\n");
+				return 0;
+			}
 		}
-	}*/
-	vi TOPO;
+		k += 1;
+	}
+	// vi TOPO;
 	priority_queue<int, vector<int>, greater<int>> PQ;
 	REP(i, n)	{
 		if(in[i] == 0)	{
@@ -95,15 +99,8 @@ int main()	{
 				PQ.push(Adj[i][j]);
 			}
 		}
-		TOPO.pb(i);
-		// printf("%d ", i+1);
-	}
-	if(TOPO.size() < n)	{
-		printf("Sandro fails\n");
-		return 0;
-	}
-	REP(i, TOPO.size())	{
-		printf("%d ", TOPO[i]+1);
+		// TOPO.pb(i);
+		printf("%d ", i+1);
 	}
 	printf("\n");
 	return 0;
