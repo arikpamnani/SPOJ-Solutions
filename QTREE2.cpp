@@ -28,13 +28,14 @@ const ll INF = 1e18;
 int P[10007];
 int L[10007];
 int PI[10007][50];
-int AM[10007][10007];
+int AM[10007];
 
-void bfs(vector<vi> Adj, int s, vi& visited)	{
+void bfs(vector<vector<pii> > Adj, int s, vi& visited)	{
 
 	visited[s]=1;
 	P[s]=-1;
 	L[s]=0;
+	AM[s]=0;
 	queue<int> q;
 	q.push(s);
 	
@@ -43,17 +44,17 @@ void bfs(vector<vi> Adj, int s, vi& visited)	{
 		int A=q.front();
 		q.pop();
 		REP(i, Adj[A].size())	{
-			if(!visited[Adj[A][i]])	{	
-				visited[Adj[A][i]]=1;
-				P[Adj[A][i]]=A;
-				L[Adj[A][i]]=L[A]+1;
-				q.push(Adj[A][i]);
+			if(!visited[Adj[A][i].f])	{	
+				visited[Adj[A][i].f]=1;
+				P[Adj[A][i].f]=A;
+				L[Adj[A][i].f]=L[A]+1;
+				AM[Adj[A][i].f]=Adj[A][i].s;
+				q.push(Adj[A][i].f);
 			}
 		}
 	}
 
 }
-
 
 
 int lca(int p, int q)	{
@@ -93,16 +94,16 @@ int main()	{
 		t--;
 		int n;
 		sd(n);
-		vector<vi> Adj(n);
+		vector<vector<pii> > Adj(n);
 		REP(i, n-1)	{	
 			int a, b, c;
 			sd(a);
 			sd(b);
 			sd(c);
-			Adj[a-1].pb(b-1);
-			Adj[b-1].pb(a-1);
-			AM[a-1][b-1]=c;
-			AM[b-1][a-1]=c;
+			Adj[a-1].pb(mp(b-1, c));
+			Adj[b-1].pb(mp(a-1, c));
+			// AM[a-1][b-1]=c;
+			// AM[b-1][a-1]=c;
 		}
 		vi visited(n);	
 		bfs(Adj, 0, visited);	
@@ -126,6 +127,10 @@ int main()	{
 		while(true)	{
 			int a,b,k;
 			cin>>in;
+			if(in[1]=='O')	{
+				printf("\n");
+				break;
+			}
 			if(in[1] == 'I')	{
 				cin >> a >> b;
 				a--;
@@ -133,11 +138,11 @@ int main()	{
 				int d=lca(a, b);
 				ll res=0;
 				while(a!=d)	{
-					res+=AM[a][P[a]];
+					res+=AM[a];
 					a=P[a];
 				}
 				while(b!=d)	{
-					res+=AM[b][P[b]];
+					res+=AM[b];
 					b=P[b];
 				}
 				printf("%lld\n",res);
@@ -170,15 +175,8 @@ int main()	{
 					}	
 					
 				}		
-				else	{
-					printf("\n");
-					break;
-				}
 			}
-			
 		}		
-		// printf("\n");
-
 	}
 	return 0;
 }
