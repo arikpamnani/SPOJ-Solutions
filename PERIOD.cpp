@@ -26,61 +26,42 @@ const int mod = 1e9+7;
 const ll INF = 1e18;
 const int MAX = 1000007;
 
+int m;
+
 char A[MAX];
-char B[MAX];
-char P[MAX];
+int P[MAX];
 
 void ComputeP(void)	{
-	int m=strlen(B);
-	int k=0;
+	// int m=strlen(A);
 	P[0]=0;
+	int k=0;
 	for(int i=1; i<m; i++)	{
-		while(k>0 && P[k]!=P[i])	{
+		while(k>0 && A[k] != A[i])	
 			k=P[k-1];
-		}
-		if(P[k]==P[i])	
+		if(A[k] == A[i])	{
 			k++;
+		}
 		P[i]=k;
 	}
 }
 
-vi KMP(void)	{
-	int n=strlen(A);
-	int m=strlen(B);
-	vi C;
-	ComputeP();
-	int q=0;
-	for(int i=0; i<n; i++)	{
-		while(q>0 && B[q]!=A[i])
-			q=P[q-1];
-		if(B[q]==A[i])
-			q++;
-		if(q==m)	{
-			C.pb(i-m+1);	
-			q=P[q-1];
-		}
-	}
-	return C;
-}
-
 int main()	{
-	// ios::sync_with_stdio(false);
-	// cin.tie(NULL);	
 	int t;
 	sd(t);
-	while(t)	{
-		t--;
+	REP(l, t)	{
+		// t--;
+		sd(m);
 		scanf("%s",A);
-		scanf("%s",B);
-		vi C=KMP();
-		if(C.size()==0)
-			printf("Not Found\n\n");
-		else	{
-			printf("%d\n",C.size());
-			for(int i=0; i<C.size(); i++)	
-				printf("%d ",C[i]+1);		
-			printf("\n\n");
+		ComputeP();
+		printf("Test case #%d\n",l+1);
+		for(int i=1; i<m; i++)	{
+			if(P[i] >= (i+1)/2 && ( (i+1)%(i+1-P[i]) == 0))	{
+				int x=i+1;
+				int y=(i+1)/(i+1-P[i]);
+				printf("%d %d\n",x,y);
+			}
 		}
+		printf("\n");
 	}
 	return 0;
 }
